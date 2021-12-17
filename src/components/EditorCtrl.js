@@ -5,6 +5,8 @@ import CodeEditor from './CodeEditor';
 import { useParams, useNavigate } from 'react-router';
 import { Button } from '@mui/material';
 
+const baseURL = "http://lcoalhost:8080/"
+
 const options = languageIds.map((language) => {
     return {
         value: language,
@@ -23,7 +25,7 @@ const EditorCtrl = ({ isNew }) => {
         (
             async () => {
                 if (!isNew && !isreadMode) {
-                    const data = await fetch(`http://localhost:8080/api/read/${id}`, {
+                    const data = await fetch(`${baseURL}/api/read/${id}`, {
                         method: "GET",
                     });
                     const json = await data.json();
@@ -39,7 +41,11 @@ const EditorCtrl = ({ isNew }) => {
 
     const handleClick = async () => {
         const data = content;
-        const resp = await fetch('http://localhost:8080/api/create', {
+        if (!(/\S/.test(data))) {
+            alert('不能为空');
+            return;
+        }
+        const resp = await fetch(`${baseURL}/api/create`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
