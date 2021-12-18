@@ -1,32 +1,65 @@
 import Select from 'react-select';
-import { languageIds } from '../utils/highlighting';
-import { useEffect, useState } from 'react';
+import {
+    languageIds
+} from '../utils/highlighting';
+import {
+    useEffect,
+    useState
+} from 'react';
 import CodeEditor from './CodeEditor';
-import { useParams, useNavigate } from 'react-router';
-import { Button } from '@mui/material';
+import {
+    useParams,
+    useNavigate
+} from 'react-router';
+import {
+    Button
+} from '@mui/material';
 
-const baseURL = "http://lcoalhost:8080/"
+import configData from "./../config.json";
 
-const options = languageIds.map((language) => {
+const SERVER_URL = configData.SERVER_URL
+
+const languageOptions = languageIds.map((language) => {
     return {
         value: language,
         label: language,
     }
 });
 
-const EditorCtrl = ({ isNew }) => {
+const expireOptions = [{
+    value: 1,
+    label: "1 Day"
+},
+{
+    value: 7,
+    label: "7 Days"
+},
+{
+    value: 30,
+    label: "1 Month"
+},
+]
+
+const EditorCtrl = ({
+    isNew
+}) => {
     const id = useParams("id").id;
 
     const [type, setType] = useState('plain');
+    const [expiredDays, setExpiredDays] = useState(7);
     const [content, setContent] = useState('');
     const [isreadMode, setIsReadMode] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         (
             async () => {
                 if (!isNew && !isreadMode) {
-                    const data = await fetch(`${baseURL}/api/read/${id}`, {
+                    const data = await fetch(`${SERVER_URL}/read/${id}`, {
                         method: "GET",
+                    }).catch(e => {
+                        navigate("/");
                     });
                     const json = await data.json();
                     setContent(json.data);
@@ -37,7 +70,6 @@ const EditorCtrl = ({ isNew }) => {
         )()
     });
 
-    const navigate = useNavigate();
 
     const handleClick = async () => {
         const data = content;
@@ -45,11 +77,14 @@ const EditorCtrl = ({ isNew }) => {
             alert('不能为空');
             return;
         }
-        const resp = await fetch(`${baseURL}/api/create`, {
+        const resp = await fetch(`${SERVER_URL}/create`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
-                type,
+                "type": type,
+                "expired_days": expiredDays,
                 data,
             })
         })
@@ -72,13 +107,27 @@ const EditorCtrl = ({ isNew }) => {
             {!isNew && <Button variant="contained" onClick={() => navigate("/")}>new</Button>}
             <> </>
             {!isNew && <Button variant="contained" onClick={handleShare}>点击复制分享链接</Button>}
-            {isNew && <Select
-                defaultValue={options.filter(option => option.label === 'plain')}
-                options={options}
-                onChange={option => {
-                    setType(option.value)
-                }}
-            />}
+            <div>
+                <div>
+                    {isNew && <Select
+                        defaultValue={languageOptions.filter(option => option.label === 'plain')}
+                        options={languageOptions}
+                        onChange={option => {
+                            setType(option.value)
+                        }}
+                    />}
+                </div>
+                <div>
+                    {isNew && <Select
+                        defaultValue={expireOptions.filter(option => option.label === 'plain')}
+                        options={expireOptions}
+                        onChange={option => {
+                            setExpiredDays(option.value)
+                        }}
+                    />}
+                </div>
+            </div>
+
             <CodeEditor
                 content={content}
                 setContent={setContent}
