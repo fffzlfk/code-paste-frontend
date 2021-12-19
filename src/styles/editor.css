@@ -1,0 +1,23 @@
+.container {
+    margin: auto;
+    text-align: center;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.wrapper .item {
+    padding: 1em;
+    display: flex;
+    align-items: center;
+}
+
+.wrapper .item .sub {
+    padding: 0.5em;
+}
+
+.editor {
+    align-items: center;
+    padding-left: 2em;
+}

@@ -1,22 +1,28 @@
-import ReactEditor from 'react-simple-code-editor';
-import { getHighlighter } from '../utils/highlighting';
-import 'prismjs/themes/prism.css';
+import AceEditor from "react-ace";
 
-const CodeEditor = ({ content, setContent, type }) => {
-    const highlight = getHighlighter(type);
+import "../utils/lib/modes"
+import "../utils/lib/themes"
+
+const CodeEditor = ({ content, setContent, type, theme }) => {
 
     return (
-        <ReactEditor
-            value={content}
-            onValueChange={setContent}
-            highlight={highlight}
-            placeholder={'Type some code...'}
-            padding={10}
-            style={{
-                fontFamily: '"Fira code", "Fira Mono", monospace',
-                fontSize: 17,
-            }}
-        />
+        <main>
+            <AceEditor
+                width="80%"
+                height="900px"
+                mode={type}
+                theme={theme}
+                placeholder='Type some code...'
+                onChange={setContent}
+                value={content}
+                fontSize={17}
+                editorProps={{
+                    enableBasicAutocompletion: true,
+                }}
+                showGutter={false}
+                showPrintMargin={true}
+            />
+        </main>
     )
 }
 
