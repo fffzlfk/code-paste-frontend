@@ -119,7 +119,7 @@ const EditorCtrl = ({
                 </div>
                 <div>
                     {isNew && <Select
-                        defaultValue={expireOptions.filter(option => option.label === 'plain')}
+                        defaultValue={expireOptions.filter(option => option.label === '1 Day')}
                         options={expireOptions}
                         onChange={option => {
                             setExpiredDays(option.value)
