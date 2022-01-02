@@ -20,7 +20,6 @@ import expireOptions from '../utils/expires';
 
 const SERVER_URL = configData.SERVER_URL
 
-
 const EditorCtrl = ({
     isNew
 }) => {
@@ -54,7 +53,6 @@ const EditorCtrl = ({
         )()
     });
 
-
     const handleClick = async () => {
         const data = content;
         data.trim();
@@ -77,9 +75,9 @@ const EditorCtrl = ({
         navigate("/" + json.uuid);
     }
 
-    const handleShare = () => {
+    const copyToClipboard = (value) => {
         const el = document.createElement('input');
-        el.value = window.location.href;
+        el.value = value;
         document.body.appendChild(el);
         el.select();
         document.execCommand('copy');
@@ -94,7 +92,10 @@ const EditorCtrl = ({
                     <Button variant="contained" onClick={() => { setContent(''); navigate("/") }}>new</Button>
                 </div>
                 <div className="item">
-                    <Button variant="contained" onClick={handleShare}>点击复制分享链接</Button>
+                    <Button variant="contained" onClick={() => copyToClipboard(window.location.href)}>点击复制分享链接</Button>
+                </div>
+                <div className="item">
+                    <Button variant="contained" onClick={() => copyToClipboard(content)}>点击复制内容</Button>
                 </div>
             </div>}
 
