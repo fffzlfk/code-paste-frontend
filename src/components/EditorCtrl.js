@@ -43,7 +43,7 @@ const EditorCtrl = ({
                         });
                         const json = await data.json();
                         setContent(json.data);
-                        setType(json.type);
+                        setType(json.language);
                         setIsReadMode(true);
                     } catch (e) {
                         navigate("/");
@@ -52,6 +52,7 @@ const EditorCtrl = ({
             }
         )()
     });
+
 
     const handleClick = async () => {
         const data = content;
@@ -65,14 +66,15 @@ const EditorCtrl = ({
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({
-                "type": type,
+                "language": type,
                 "expired_days": expiredDays,
                 data,
-            })
+            }),
         })
         const json = await resp.json();
-        navigate("/" + json.uuid);
+        navigate("/" + json);
     }
 
     const copyToClipboard = (value) => {
